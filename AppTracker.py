@@ -41,8 +41,8 @@ class QuestApp:
 
     def save_completed_levels(self):
         with open('completed_levels.txt', 'w') as file:
-            for level in self.completed_levels:
-                file.write(level + '\n')
+            for level_difficulty in self.completed_levels:
+                file.write(level_difficulty + '\n')
 
     def create_interface(self):
         self.frames = []
@@ -53,22 +53,22 @@ class QuestApp:
             tk.Label(frame, text=difficulty).pack()
 
             for level, moves in levels:
-                level_text = f"{level} ({moves} moves)"
-                var = tk.StringVar(value=level in self.completed_levels)
-                checkbox = tk.Checkbutton(frame, text=level_text, variable=var, onvalue=True, offvalue=False)
+                level_difficulty = f"{level} ({difficulty}) - {moves} moves"
+                var = tk.StringVar(value=level_difficulty in self.completed_levels)
+                checkbox = tk.Checkbutton(frame, text=level_difficulty, variable=var, onvalue=True, offvalue=False)
                 checkbox.pack(anchor=tk.W)
-                checkbox.bind('<Button-1>', lambda event, l=level, v=var: self.update_completion(l, v))
+                checkbox.bind('<Button-1>', lambda event, ld=level_difficulty, v=var: self.update_completion(ld, v))
 
             self.frames.append(frame)
 
         tk.Button(self.root, text="Save", command=self.save_completed_levels).pack()
         tk.Button(self.root, text="Reset", command=self.reset_completed_levels).pack()
 
-    def update_completion(self, level, var):
+    def update_completion(self, level_difficulty, var):
         if var.get():
-            self.completed_levels.add(level)
+            self.completed_levels.add(level_difficulty)
         else:
-            self.completed_levels.discard(level)
+            self.completed_levels.discard(level_difficulty)
 
     def reset_completed_levels(self):
         if os.path.exists('completed_levels.txt'):
